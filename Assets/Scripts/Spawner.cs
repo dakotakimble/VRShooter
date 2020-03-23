@@ -1,16 +1,42 @@
-﻿// AUTHOR:Garth de Wet (Corrupted Heart)
-// CONTACT:mydeathofme[at]gmail[dot]com
-// FILENAME:Spawner.cs
-// PURPOSE:To allow spawning of different enemy types and different ways to spawn them.
+﻿// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Filename: Spawner.cs
+//  
+// Author: Garth "Corrupted Heart" de Wet <mydeathofme[at]gmail[dot]com>
+// Website: www.CorruptedHeart.co.cc
+// 
+// Copyright (c) 2010 Garth "Corrupted Heart" de Wet
+//  
+// Permission is hereby granted, free of charge (a donation is welcome at my website), to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
 
 public class Spawner : MonoBehaviour
 {
-    //----------------------------------
+    // Color of the gizmo
+    public Color gizmoColor = Color.red;
+
+    //-----------------------------------
     // All the Enums
-    //----------------------------------
+    //-----------------------------------
     // Spawn types
     public enum SpawnTypes
     {
@@ -41,6 +67,7 @@ public class Spawner : MonoBehaviour
     public GameObject MediumEnemy;
     public GameObject HardEnemy;
     public GameObject BossEnemy;
+    private Dictionary<EnemyLevels, GameObject> Enemies = new Dictionary<EnemyLevels, GameObject>(4);
     //----------------------------------
     // End of Enemy Prefabs
     //----------------------------------
@@ -75,27 +102,26 @@ public class Spawner : MonoBehaviour
     // End of Different Spawn states and ways of doing them
     //----------------------------------
 
-
-    public GameObject _player;
+    //my code for gamemanager and player
     public GameManager _gameManager;
-
+    public GameObject _player;
     void Start()
     {
         // sets a random number for the id of the spawner
         SpawnID = Random.Range(1, 500);
-        
-        
+        Enemies.Add(EnemyLevels.Easy, EasyEnemy);
+        Enemies.Add(EnemyLevels.Boss, BossEnemy);
+        Enemies.Add(EnemyLevels.Medium, MediumEnemy);
+        Enemies.Add(EnemyLevels.Hard, HardEnemy);
     }
-
     // Draws a cube to show where the spawn point is... Useful if you don't have a object that show the spawn point
     void OnDrawGizmos()
     {
         // Sets the color to red
-        Gizmos.color = Color.red;
+        Gizmos.color = gizmoColor;
         //draws a small cube at the location of the gam object that the script is attached to
         Gizmos.DrawCube(transform.position, new Vector3(0.5f, 0.5f, 0.5f));
     }
-
     void Update()
     {
         if (Spawn)
@@ -190,76 +216,12 @@ public class Spawner : MonoBehaviour
     // spawns an enemy based on the enemy level that you selected
     private void spawnEnemy()
     {
-        // To check which enemy prefab to instantiate
-        if (enemyLevel == EnemyLevels.Easy)
-        {
-            // Checks to see if there is a gameobject in the easy enemy var
-            if (EasyEnemy != null)
-            {
-                
-               
-                // spawns the enemy
-                GameObject Enemy = (GameObject)Instantiate(EasyEnemy, gameObject.transform.position, Quaternion.identity);
-                Monster monsterScript = Enemy.GetComponent<Monster>();
-                monsterScript.player = _player;
-                monsterScript.gameManager = _gameManager;
-                // calls a function on the enemy that applies the spawner's ID to the enemy
-                //Enemy.SendMessage("setName", SpawnID);
-            }
-            else
-            {
-                //Shows a debug message if there is no prefab
-                Debug.Log("ERROR: No easy enemy Prefab loaded");
-            }
-        }
-        else if (enemyLevel == EnemyLevels.Medium)
-        {
-            // Checks to see if there is a gameobject in the medium enemy var
-            if (MediumEnemy != null)
-            {
-                // spawns the enemy
-                GameObject Enemy = (GameObject)Instantiate(MediumEnemy, gameObject.transform.position, Quaternion.identity);
-                // calls a function on the enemy that applies the spawner's ID to the enemy
-                Enemy.SendMessage("setName", SpawnID);
-            }
-            else
-            {
-                //Shows a debug message if there is no prefab
-                Debug.Log("ERROR: No medium enemy Prefab loaded");
-            }
-        }
-        else if (enemyLevel == EnemyLevels.Hard)
-        {
-            // Checks to see if there is a gameobject in the hard enemy var
-            if (HardEnemy != null)
-            {
-                // spawns the enemy
-                GameObject Enemy = (GameObject)Instantiate(HardEnemy, gameObject.transform.position, Quaternion.identity);
-                // calls a function on the enemy that applies the spawner's ID to the enemy
-                Enemy.SendMessage("setName", SpawnID);
-            }
-            else
-            {
-                //Shows a debug message if there is no prefab
-                Debug.Log("ERROR: No hard enemy Prefab loaded");
-            }
-        }
-        else if (enemyLevel == EnemyLevels.Boss)
-        {
-            // Checks to see if there is a gameobject in the boss enemy var
-            if (BossEnemy != null)
-            {
-                // spawns the enemy
-                GameObject Enemy = (GameObject)Instantiate(BossEnemy, gameObject.transform.position, Quaternion.identity);
-                // calls a function on the enemy that applies the spawner's ID to the enemy
-                Enemy.SendMessage("setName", SpawnID);
-            }
-            else
-            {
-                //Shows a debug message if there is no prefab
-                Debug.Log("ERROR: No boss enemy Prefab loaded");
-            }
-        }
+        GameObject Enemy = (GameObject)Instantiate(Enemies[enemyLevel], gameObject.transform.position, Quaternion.identity);
+        Enemy.SendMessage("setName", SpawnID);
+        //set enemy gamemanager and player
+        Monster monsterScript = Enemy.GetComponent<Monster>();
+        monsterScript.player = _player;
+        monsterScript.gameManager = _gameManager;
         // Increase the total number of enemies spawned and the number of spawned enemies
         numEnemy++;
         spawnedEnemy++;

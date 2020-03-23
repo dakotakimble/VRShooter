@@ -18,7 +18,7 @@ public class PlayerHealth : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (currHealth == 0)
+        if (currHealth <= 0)
         {
             gameManger.Restart();
         }
@@ -26,6 +26,7 @@ public class PlayerHealth : MonoBehaviour
 
     public void OnTriggerEnter(Collider coll)
     {
+        Debug.Log("monster inside you");
         if (coll.gameObject.CompareTag("Monster"))
         {
             Debug.Log("enemy attacking");

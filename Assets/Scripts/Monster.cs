@@ -13,8 +13,11 @@ public class Monster : MonoBehaviour
 
     public int maxHealth;
     private int currHealth;
-
+    //game manager reff
     public GameManager gameManager;
+    //spawner code
+    private GameObject objSpawn;
+    private int SpawnerID;
 
     //public int damage;
     public State monsterState = State.ALIVE;
@@ -33,8 +36,13 @@ public class Monster : MonoBehaviour
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-
+        objSpawn = (GameObject)GameObject.FindWithTag("Spawner");
         currHealth = maxHealth;
+    }
+
+    void setName(int sName)
+    {
+        SpawnerID = sName;
     }
 
     void Update()
@@ -71,6 +79,7 @@ public class Monster : MonoBehaviour
             currHealth -= damage;
             if (currHealth <= 0)
                 Die();
+            
         }
     }
 
@@ -80,7 +89,7 @@ public class Monster : MonoBehaviour
         //audioSource.PlayOneShot(dieClip);
         navMeshAgent.isStopped = true;
         animator.SetTrigger("Dead");
-        
+        objSpawn.BroadcastMessage("killEnemy", SpawnerID);
         Destroy(gameObject, 5f);
         gameManager.AddScore(points);
     }

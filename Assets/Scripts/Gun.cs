@@ -7,38 +7,41 @@ public class Gun : MonoBehaviour
 {
     AudioSource audioSource;
     public float fireRate;
-    private float nextTimeToFire = 0f;
-    bool didFire;
+    
+    
     public Transform firePoint;
     public int damage;
     public GameObject bulletHoleFlesh;
     public GameObject bulletHoleWood;
 
-    private int counter = 0;
-
-    private PlayerWeapon currentWeapon;
+    
+    
 
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        
     }
 
     public void Update()
     {
-        
-       
-         
+
+
+
     }
+
     
+
 
     public void Fire()
     {
-        print("Pew!");
-       // audioSource.PlayOneShot(audioSource.clip);
-        RaycastHit hit;
+       print("Pew!");
+            
+            RaycastHit hit;
 
-        var forward = firePoint.transform.TransformDirection(Vector3.forward);
-        Debug.DrawRay(firePoint.transform.position, forward * 30, Color.red);
+            var forward = firePoint.transform.TransformDirection(Vector3.forward);
+            Debug.DrawRay(firePoint.transform.position, forward * 30, Color.red);
+            //audioSource.Play();
 
         // //working 12/28
         // //RAYCAST METHOD
@@ -63,10 +66,18 @@ public class Gun : MonoBehaviour
                 woodBulletHoleHandler = Instantiate(bulletHoleWood, hit.point, hitRotation);
                 Destroy(woodBulletHoleHandler, 5f);
             }
-            
+
         }
+
+            
+
+            
+        
+        
     }
+
     
+
 
 
 }

@@ -7,6 +7,7 @@ TagManager:
   - Gun
   - Monster
   - Wood
+  - Spawner
   layers:
   - Default
   - TransparentFX
