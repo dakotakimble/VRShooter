@@ -5,6 +5,7 @@ using UnityEngine;
 public class HandHeld : MonoBehaviour
 {
     public int damage;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +25,9 @@ public class HandHeld : MonoBehaviour
         {
             Debug.Log(coll.transform.name);
 
-
+            
+            
+            
             Monster monsterScript = coll.GetComponent<Monster>();
             monsterScript.Hurt(damage);
         }

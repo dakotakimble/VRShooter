@@ -27,13 +27,26 @@ public class Monster : MonoBehaviour
     public enum State
     {
         ALIVE, DYING, 
-    } 
+    }
 
-    
 
+
+    void SetKinematic(bool newValue)
+    {
+        Rigidbody[] bodies = GetComponentsInChildren<Rigidbody>();
+        foreach (Rigidbody rb in bodies)
+        {
+            rb.isKinematic = newValue;
+        }
+    }
+    void OnAwake()
+    {
+       
+    }
 
     void Start()
     {
+        SetKinematic(true);
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         objSpawn = (GameObject)GameObject.FindWithTag("Spawner");
@@ -85,10 +98,12 @@ public class Monster : MonoBehaviour
 
     void Die()
     {
+        GetComponent<Animator>().enabled = false;
+        SetKinematic(false);
         monsterState = State.DYING;
         //audioSource.PlayOneShot(dieClip);
         navMeshAgent.isStopped = true;
-        animator.SetTrigger("Dead");
+        //animator.SetTrigger("Dead");
         objSpawn.BroadcastMessage("killEnemy", SpawnerID);
         Destroy(gameObject, 5f);
         gameManager.AddScore(points);

@@ -15,11 +15,11 @@ namespace NewtonVR.Example
         {
             base.UseButtonDown();
 
-            GameObject bullet = GameObject.Instantiate(BulletPrefab);
-            bullet.transform.position = FirePoint.position;
-            bullet.transform.forward = FirePoint.forward;
+            //GameObject bullet = GameObject.Instantiate(BulletPrefab);
+            //bullet.transform.position = FirePoint.position;
+            //bullet.transform.forward = FirePoint.forward;
 
-            bullet.GetComponent<Rigidbody>().AddRelativeForce(BulletForce);
+            //bullet.GetComponent<Rigidbody>().AddRelativeForce(BulletForce);
 
             AttachedHand.TriggerHapticPulse(500);
         }
