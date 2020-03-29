@@ -26,6 +26,7 @@ public class Gun : MonoBehaviour
     public bool canFire = true;
     public bool isReloading = false;
 
+    public AudioClip _fireClip;
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -72,7 +73,14 @@ public class Gun : MonoBehaviour
     }
 
 
-
+    public void AutoShoot()
+    {
+        InvokeRepeating("Fire",0f, fireRate);
+    }
+    public void CancelShoot()
+    {
+        CancelInvoke("Fire");
+    }
 
 
     public void Fire()
@@ -92,7 +100,7 @@ public class Gun : MonoBehaviour
 
             var forward = firePoint.transform.TransformDirection(Vector3.forward);
             Debug.DrawRay(firePoint.transform.position, forward * 30, Color.red);
-            audioSource.Play();
+            audioSource.PlayOneShot(_fireClip);
 
             // //working 12/28
             // //RAYCAST METHOD
